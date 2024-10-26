@@ -10,7 +10,7 @@ void printHex(uint64_t input) {
 }
 
 //! Constants 
-static char expansionTable[] = {
+static const char expansionTable[] = {
     32,  1,  2,  3,  4,  5,  
      4,  5,  6,  7,  8,  9,  
      8,  9, 10, 11, 12, 13, 
@@ -21,7 +21,7 @@ static char expansionTable[] = {
     28, 29, 30, 31, 32,  1
 };
 
-static char postSBoxPermutation[] = {
+static const char postSBoxPermutation[] = {
     16,  7, 20, 21, 
     29, 12, 28, 17, 
      1, 15, 23, 26, 
@@ -32,7 +32,7 @@ static char postSBoxPermutation[] = {
     22, 11,  4, 25
 };
 
-static char SBoxTable[8][64] = {
+static const char SBoxTable[8][64] = {
     /* S1 */
     {
     14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5,  9,  0,  7,  
@@ -91,7 +91,7 @@ static char SBoxTable[8][64] = {
     }
 };
 
-static char PC1[] = {
+static const char PC1[] = {
     57, 49, 41, 33, 25, 17,  9,
      1, 58, 50, 42, 34, 26, 18,
     10,  2, 59, 51, 43, 35, 27,
@@ -103,7 +103,7 @@ static char PC1[] = {
     21, 13,  5, 28, 20, 12,  4
 };
 
-static char PC2[] = {
+static const char PC2[] = {
     14, 17, 11, 24,  1,  5,
      3, 28, 15,  6, 21, 10,
     23, 19, 12,  4, 26,  8,
@@ -114,12 +114,12 @@ static char PC2[] = {
     46, 42, 50, 36, 29, 32
 };
 
-static char iterationShiftTable[] = {
+static const char iterationShiftTable[] = {
  /* 1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16 */
     1,  1,  2,  2,  2,  2,  2,  2,  1,  2,  2,  2,  2,  2,  2,  1
 };
 
-static char InitialPermutationTable[] = {
+static const char InitialPermutationTable[] = {
     58, 50, 42, 34, 26, 18, 10,  2, 
     60, 52, 44, 36, 28, 20, 12,  4, 
     62, 54, 46, 38, 30, 22, 14,  6, 
