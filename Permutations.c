@@ -2,30 +2,32 @@
 #include <stdint.h>
 #include <inttypes.h> // just to use PRIu64 for printing uint64_t on the screen
 
-#define ROTATE_RIGHT_64BIT(value, amount) (((value >> amount) | (value << (64-amount))))
+#define ROTATE_RIGHT(value, amount, size) (((value >> amount) | (value << (size-amount))))
 
 /*******************************************************************************************************
-Function: permut_64bit_block
+Function: permut_block
 Return Type: uint64_t
 
 Arguments:
     - const uint8_t permutation_table[]:
         + Unsigned constant array.
-        + The 64 bit permutation table that will be used (for ex. IP or INV_IP).
-    - const uint64_t non_permuted_64bit_block:
+        + The permutation table that will be used (for ex. IP or INV_IP).
+    - int permutation_table_size:
+        + size of the permutaion table
+    - const uint64_t non_permuted_block:
         + Unsigned constant 64 bit.
-        + The 64-bit data before permutation occurs on it.
+        + The data before permutation occurs on it.
 
 Returned Value:
-    + Unsigned constant 64 bit.
-    + The 64-bit data after permutation occured on it (permuted_64bit_block).
+    + Unsigned constant.
+    + The data after permutation occured on it (permuted_block).
 
 Test:
-    + Run test_permut_64bit_block() and compare the results.
+    + Run test_permut_block() and compare the results.
     + Output on console should be: "The permuted 64-bit block in decimal is: 14699974583363760298".
 ********************************************************************************************************/
-uint64_t permut_64bit_block(const uint8_t permutation_table[], const uint64_t non_permuted_64bit_block);
-void test_permut_64bit_block();
+uint64_t permut_block(const uint8_t permutation_table[], int permutation_table_size, const uint64_t non_permuted_block);
+void test_permut_block();
 /*******************************************************************************************************/
 
 int main() {
@@ -59,36 +61,35 @@ int main() {
     };
 
     //uncomment to test
-    //test_permut_64bit_block();
+    //test_permut_block();
 
 
     return 0;
 }
 
 
-uint64_t permut_64bit_block(const uint8_t permutation_table[], const uint64_t non_permuted_64bit_block){
+uint64_t permut_block(const uint8_t permutation_table[], int permutation_table_size, const uint64_t non_permuted_block){
 
-    uint64_t permuted_64bit_block = 0xFFFFFFFFFFFFFFFF;
+    uint64_t permuted_block = 0xFFFFFFFFFFFFFFFF;
 
-    for (int i = 0; i < 64; i++){
+    for (int i = 0; i < permutation_table_size; i++){
 
         if ((permutation_table[i]-1-i) > 0){
-            permuted_64bit_block &= ((non_permuted_64bit_block << (permutation_table[i]-i-1)) | 
-                ROTATE_RIGHT_64BIT(0x7FFFFFFFFFFFFFFF, i));
+            permuted_block &= ((non_permuted_block << (permutation_table[i]-i-1)) | 
+                ROTATE_RIGHT(0x7FFFFFFFFFFFFFFF, i, permutation_table_size));
         }
         else {
-            permuted_64bit_block &= ((non_permuted_64bit_block >> (i-permutation_table[i]+1)) | 
-                ROTATE_RIGHT_64BIT(0x7FFFFFFFFFFFFFFF, i));
+            permuted_block &= ((non_permuted_block >> (i-permutation_table[i]+1)) | 
+                ROTATE_RIGHT(0x7FFFFFFFFFFFFFFF, i, permutation_table_size));
         }
-
+        
     }
 
-    return permuted_64bit_block;
-
+    return (permuted_block >> (64-permutation_table_size));
 }
 
-void test_permut_64bit_block(){
-
+void test_permut_block(){
+    
     // pre-defined 64-bit plaintext_block used to test
     static const uint64_t plaintext_block =
         0b0000000100100011010001010110011110001001101010111100110111101111;
@@ -104,9 +105,11 @@ void test_permut_64bit_block(){
         61, 53, 45, 37, 29, 21, 13, 5,
         63, 55, 47, 39, 31, 23, 15, 7
     };
+
+    static const int permutation_table_size = 64;
     
     // calling the function with the predefined arguments to test it
-    uint64_t permuted_plaintext_block = permut_64bit_block(permutation_table, plaintext_block);
+    uint64_t permuted_plaintext_block = permut_block(permutation_table, permutation_table_size, plaintext_block);
 
     printf("The permuted 64-bit block in decimal is: %" PRIu64 "\n", permuted_plaintext_block);
 
@@ -117,5 +120,4 @@ void test_permut_64bit_block(){
 
     So output should be >> "The permuted 64-bit block in decimal is: 14699974583363760298"
     */
-
 }
